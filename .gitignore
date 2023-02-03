@@ -13,3 +13,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# OS metadata
+thumbs.db
+desktop.ini
+.DS_Store
