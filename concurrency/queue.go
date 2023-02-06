@@ -1,4 +1,4 @@
-package queue
+package concurrency
 
 import (
 	"sync/atomic"
@@ -10,11 +10,12 @@ type Queue struct {
 	next    uint64
 }
 
-// New creates a blocking wait group that can be incremented
+// New creates a wait group that can be incremented/decremented
 func New(available uint8) Queue {
 	return Queue{next: uint64(available)}
 }
 
+// Wait blocks until a slot is ready
 func (q *Queue) Wait() {
 	myTurn := atomic.AddUint64(&q.counter, 1)
 

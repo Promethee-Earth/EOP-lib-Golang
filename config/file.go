@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// LoadFile reads an ini file then return it as a map (associated array)
-func LoadFile(filepath string) (map[string]string, error) {
+// LoadIniFile reads a simple ini file then return it as a key-value map
+func LoadIniFile(filepath string) (map[string]string, error) {
 	config := make(map[string]string)
 
 	file, err := os.Open(filepath)
@@ -24,12 +24,12 @@ func LoadFile(filepath string) (map[string]string, error) {
 			continue
 		}
 
-		name, value := strings.TrimSpace(text[0:index]), strings.TrimSpace(text[index:])
-		if value == "" || name == "" || name[0] == '#' || name[0] == ';' {
+		key, value := strings.TrimSpace(text[0:index]), strings.TrimSpace(text[index:])
+		if key == "" || value == "" || key[0] == '#' || key[0] == ';' {
 			continue
 		}
 
-		config[name] = value
+		config[key] = value
 	}
 
 	return config, nil
