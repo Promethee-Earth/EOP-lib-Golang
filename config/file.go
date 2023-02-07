@@ -24,7 +24,7 @@ func LoadIniFile(filepath string) (map[string]string, error) {
 			continue
 		}
 
-		key, value := strings.TrimSpace(text[0:index]), strings.TrimSpace(text[index:])
+		key, value := strings.TrimSpace(text[0:index]), strings.TrimSpace(text[index+1:])
 		if key == "" || value == "" || key[0] == '#' || key[0] == ';' {
 			continue
 		}
