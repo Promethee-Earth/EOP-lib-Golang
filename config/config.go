@@ -40,14 +40,8 @@ func LoadIniFile(filepath string) (Config, error) {
 	return cfg, nil
 }
 
-// GetBoolean returns true if the value is "true", "yes", "on" or "1"
-func (c Config) GetBoolean(key string) bool {
-	var value = strings.ToLower(c.values[key])
-	return value == "true" || value == "yes" || value == "on" || value == "1"
-}
-
-// GetValue returns the value of the key or the default value
-func (c Config) GetValue(key string, defaultValue ...string) string {
+// Get returns the value of the key or the default value
+func (c Config) Get(key string, defaultValue ...string) string {
 	var value = c.values[key]
 	if value == "" && len(defaultValue) > 0 {
 		return defaultValue[0]
@@ -55,13 +49,20 @@ func (c Config) GetValue(key string, defaultValue ...string) string {
 	return value
 }
 
-// IsBetween checks if a key value is between min and max
+// GetBoolean returns true if the value is "yes", "on", "1" or "true" (case insensitive)
+func (c Config) GetBoolean(key string) bool {
+	var value = strings.ToLower(c.values[key])
+	return value == "true" || value == "yes" || value == "on" || value == "1"
+}
+
+// IsBetween checks if a key value number is between min and max (included)
 func (c Config) IsBetween(key string, min, max int64) bool {
 	var value, err = strconv.ParseInt(c.values[key], 10, 32)
 	return err == nil && value >= min && value <= max
 }
 
-func (c Config) HasValue(key string, values ...string) bool {
+// IsValue checks if the key is set to one of these values
+func (c Config) IsValue(key string, values ...string) bool {
 	for _, value := range values {
 		if c.values[key] == value {
 			return true
