@@ -72,5 +72,5 @@ func (l *Logger) NewRequest(traceID string, payload any) request {
 	return request{
 		endpoint: function,
 		traceID:  traceID,
-		Logger:   l}
+		logger:   l}
 }

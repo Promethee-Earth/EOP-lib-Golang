@@ -7,7 +7,7 @@ import (
 )
 
 type request struct {
-	logger   *logger
+	logger   *Logger
 	endpoint string
 	traceID  string
 }
