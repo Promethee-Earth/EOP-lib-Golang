@@ -17,7 +17,7 @@ func New(available uint8) Queue {
 
 // Wait blocks until a slot is ready
 func (q *Queue) Wait() {
-	myTurn := atomic.AddUint64(&q.counter, 1)
+	var myTurn = atomic.AddUint64(&q.counter, 1)
 
 	for myTurn > q.next {
 		time.Sleep(500 * time.Millisecond)
