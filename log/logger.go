@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type logger struct {
+type Logger struct {
 	format         string
 	serviceName    string
 	serverIP       string
@@ -19,12 +19,12 @@ type logger struct {
 }
 
 // Property accessor
-func (l *logger) GetRequestCounter() uint64 { return l.counterRequest }
-func (l *logger) GetErrorCounter() uint64   { return l.counterError }
+func (l *Logger) GetRequestCounter() uint64 { return l.counterRequest }
+func (l *Logger) GetErrorCounter() uint64   { return l.counterError }
 
-// NewLogger constructs a new instance of logger
-func NewLogger(serviceName, format string, logEverything bool) logger {
-	var log = logger{
+// NewLogger constructs a new instance of Logger
+func NewLogger(serviceName, format string, logEverything bool) Logger {
+	var log = Logger{
 		format:        format + "\n",
 		serviceName:   serviceName,
 		logEverything: logEverything}
@@ -44,19 +44,19 @@ func NewLogger(serviceName, format string, logEverything bool) logger {
 }
 
 // Info logs an informative message.
-func (l *logger) Info(values ...any) {
+func (l *Logger) Info(values ...any) {
 	fmt.Printf(l.format, time.Now().Unix(), l.serviceName, l.serverIP, "", "INFO", "",
 		strings.TrimSpace(fmt.Sprintln(values...)))
 }
 
 // Fatal logs a message then quit the program!
-func (l *logger) Fatal(msg string) {
+func (l *Logger) Fatal(msg string) {
 	fmt.Printf(l.format, time.Now().Unix(), l.serviceName, l.serverIP, "", "FATAL", "", msg)
 	os.Exit(1)
 }
 
 // NewRequest constructs a new instance of request
-func (l *logger) NewRequest(traceID string, payload any) request {
+func (l *Logger) NewRequest(traceID string, payload any) request {
 	l.counterRequest++
 
 	var pc, _, _, _ = runtime.Caller(1)
@@ -72,5 +72,5 @@ func (l *logger) NewRequest(traceID string, payload any) request {
 	return request{
 		endpoint: function,
 		traceID:  traceID,
-		logger:   l}
+		Logger:   l}
 }
