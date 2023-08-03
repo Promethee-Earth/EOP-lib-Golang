@@ -11,8 +11,7 @@ import (
 
 type Logger struct {
 	format         string
-	serviceName    string
-	serverIP       string
+	host           string
 	logEverything  bool
 	counterRequest uint64
 	counterError   uint64
@@ -23,18 +22,17 @@ func (l *Logger) GetRequestCounter() uint64 { return l.counterRequest }
 func (l *Logger) GetErrorCounter() uint64   { return l.counterError }
 
 // NewLogger constructs a new instance of Logger
-func NewLogger(serviceName, format string, logEverything bool) Logger {
+func NewLogger(format string, logEverything bool) Logger {
 	var log = Logger{
 		format:        format + "\n",
-		serviceName:   serviceName,
 		logEverything: logEverything}
 
-	log.serverIP, _ = os.Hostname()
-	if log.serverIP == "" {
-		var addrs, _ = net.LookupIP(log.serverIP)
+	log.host, _ = os.Hostname()
+	if log.host == "" {
+		var addrs, _ = net.LookupIP(log.host)
 		for _, address := range addrs {
 			if ipv4 := address.To4(); ipv4 != nil {
-				log.serverIP = ipv4.String()
+				log.host = ipv4.String()
 				break
 			}
 		}
@@ -45,13 +43,13 @@ func NewLogger(serviceName, format string, logEverything bool) Logger {
 
 // Info logs an informative message.
 func (l *Logger) Info(values ...any) {
-	fmt.Printf(l.format, time.Now().Unix(), l.serviceName, l.serverIP, "", "INFO", "",
+	fmt.Printf(l.format, time.Now().Unix(), l.host, "", "", "INFO",
 		strings.TrimSpace(fmt.Sprintln(values...)))
 }
 
 // Fatal logs a message then quit the program!
 func (l *Logger) Fatal(msg string) {
-	fmt.Printf(l.format, time.Now().Unix(), l.serviceName, l.serverIP, "", "FATAL", "", msg)
+	fmt.Printf(l.format, time.Now().Unix(), l.host, "", "", "FATAL", msg)
 	os.Exit(1)
 }
 
@@ -64,8 +62,7 @@ func (l *Logger) NewRequest(traceID string, payload any) request {
 	function = function[strings.LastIndex(function, ".")+1:]
 
 	if l.logEverything {
-		fmt.Printf(l.format,
-			time.Now().Unix(), l.serviceName, l.serverIP, traceID, "REQUEST", function,
+		fmt.Printf(l.format, time.Now().Unix(), l.host, traceID, function, "REQUEST",
 			strings.TrimSpace(strings.ReplaceAll(fmt.Sprintln(payload), `trace_id:"`+traceID+`"`, "")))
 	}
 
