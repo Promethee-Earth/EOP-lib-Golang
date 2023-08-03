@@ -13,7 +13,7 @@ type request struct {
 }
 
 // Response logs a response payload.
-func (r request) Response(payload any) {
+func (r request) Response(payload string) {
 	if r.logger.logEverything {
 		fmt.Printf(r.logger.format,
 			time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "RESPONSE", payload)
