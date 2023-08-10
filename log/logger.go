@@ -53,8 +53,8 @@ func (l *Logger) Fatal(msg string) {
 	os.Exit(1)
 }
 
-// NewRequest constructs a new instance of request
-func (l *Logger) NewRequest(traceID, payload string) request {
+// NewRequest constructs a new instance of Request
+func (l *Logger) NewRequest(traceID, payload string) Request {
 	l.counterRequest++
 
 	var pc, _, _, _ = runtime.Caller(1)
@@ -66,7 +66,7 @@ func (l *Logger) NewRequest(traceID, payload string) request {
 			strings.TrimSpace(strings.ReplaceAll(payload, `trace_id:"`+traceID+`"`, "")))
 	}
 
-	return request{
+	return Request{
 		endpoint: function,
 		traceID:  traceID,
 		logger:   l}

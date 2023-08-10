@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-type request struct {
+type Request struct {
 	logger   *Logger
 	endpoint string
 	traceID  string
 }
 
 // Response logs a response payload.
-func (r request) Response(payload string) {
+func (r Request) Response(payload string) {
 	if r.logger.logEverything {
 		fmt.Printf(r.logger.format,
 			time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "RESPONSE", payload)
@@ -21,7 +21,7 @@ func (r request) Response(payload string) {
 }
 
 // Info logs an informative message for debugging purposes.
-func (r request) Info(msg string) {
+func (r Request) Info(msg string) {
 	if r.logger.logEverything {
 		fmt.Printf(r.logger.format,
 			time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "INFO", msg)
@@ -29,13 +29,13 @@ func (r request) Info(msg string) {
 }
 
 // Warning logs a warning message.
-func (r request) Warning(msg string) {
+func (r Request) Warning(msg string) {
 	fmt.Printf(r.logger.format,
 		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "WARNING", msg)
 }
 
 // Error logs an error message.
-func (r request) Error(values ...any) {
+func (r Request) Error(values ...any) {
 	r.logger.counterError++
 	fmt.Printf(r.logger.format,
 		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "ERROR",
@@ -43,7 +43,7 @@ func (r request) Error(values ...any) {
 }
 
 // DontPanic recovers from a panic and catches the error
-func (r request) DontPanic() {
+func (r Request) DontPanic() {
 	var err = recover()
 	if err != nil {
 		r.logger.counterError++
