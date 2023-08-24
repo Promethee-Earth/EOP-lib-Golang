@@ -54,20 +54,25 @@ func (l *Logger) Fatal(msg string) {
 }
 
 // NewRequest constructs a new instance of Request
-func (l *Logger) NewRequest(traceID, payload string) Request {
+func (l *Logger) NewRequest(payload string) Request {
 	l.counterRequest++
+	var request = Request{logger: l}
 
 	var pc, _, _, _ = runtime.Caller(1)
-	var function = runtime.FuncForPC(pc).Name()
-	function = function[strings.LastIndex(function, ".")+1:]
+	request.endpoint = runtime.FuncForPC(pc).Name()
+	request.endpoint = request.endpoint[strings.LastIndex(request.endpoint, ".")+1:]
 
-	if l.logEverything {
-		fmt.Printf(l.format, time.Now().Unix(), l.host, traceID, function, "REQUEST",
-			strings.TrimSpace(strings.ReplaceAll(payload, `trace_id:"`+traceID+`"`, "")))
+	var index = strings.Index(payload, "trace_id:")
+	if index >= 0 {
+		request.traceID = payload[index+10:]
+		request.traceID = request.traceID[:strings.Index(request.traceID, `"`)]
 	}
 
-	return Request{
-		endpoint: function,
-		traceID:  traceID,
-		logger:   l}
+	if l.logEverything {
+		fmt.Printf(
+			l.format, time.Now().Unix(), l.host, request.traceID, request.endpoint, "REQUEST",
+			strings.TrimSpace(strings.ReplaceAll(payload, `trace_id:"`+request.traceID+`"`, "")))
+	}
+
+	return request
 }
