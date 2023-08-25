@@ -29,17 +29,18 @@ func (r Request) Info(msg string) {
 }
 
 // Warning logs a warning message.
-func (r Request) Warning(msg string) {
+func (r Request) Warning(values ...any) {
 	fmt.Printf(r.logger.format,
-		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "WARNING", msg)
+		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "WARNING",
+		strings.TrimSpace(fmt.Sprintln(values...)))
 }
 
-// Error logs an error message.
-func (r Request) Error(values ...any) {
+// Error logs a gRPC error message then returns it.
+func (r Request) Error(err error) error {
 	r.logger.counterError++
 	fmt.Printf(r.logger.format,
-		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "ERROR",
-		strings.TrimSpace(fmt.Sprintln(values...)))
+		time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "ERROR", err)
+	return err
 }
 
 // DontPanic recovers from a panic and catches the error
