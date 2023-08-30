@@ -21,10 +21,11 @@ func (r Request) Response(payload string) {
 }
 
 // Info logs an informative message for debugging purposes.
-func (r Request) Info(msg string) {
+func (r Request) Info(values ...any) {
 	if r.logger.logEverything {
 		fmt.Printf(r.logger.format,
-			time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "INFO", msg)
+			time.Now().Unix(), r.logger.host, r.traceID, r.endpoint, "INFO",
+			strings.TrimSpace(fmt.Sprintln(values...)))
 	}
 }
 
